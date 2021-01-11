@@ -322,6 +322,98 @@ Well We are having trouble just extracting predictions from the GLM model.
 Nevermind. Okay. 
 
 
+## Cleaning Up
+
+### Cleaner interface
+
+Ah shit, the clustering is just a touch off.
+
+### Clustering sanity checks
+
+Are annoying.
+
+<pre>
+reghdfe ttl_exp wks_ue tenure, absorb(year idcode) cluster(idcode)
+(dropped 884 singleton observations)
+(MWFE estimator converged in 8 iterations)
+
+HDFE Linear regression                            Number of obs   =     12,568
+Absorbing 2 HDFE groups                           F(   2,   3101) =     481.77
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.9459
+                                                  Adj R-squared   =     0.9281
+                                                  Within R-sq.    =     0.2658
+Number of clusters (idcode)  =      3,102         Root MSE        =     1.1693
+
+                             (Std. Err. adjusted for 3,102 clusters in idcode)
+------------------------------------------------------------------------------
+             |               Robust
+     ttl_exp |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      wks_ue |   .0040268   .0020563     1.96   0.050    -5.17e-06    .0080587
+      tenure |   .2779749   .0089617    31.02   0.000     .2604034    .2955464
+       _cons |   5.848487   .0321137   182.12   0.000     5.785521    5.911453
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+        year |        12           0          12     |
+      idcode |      3102        3102           0    *|
+-----------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+</pre>
+
+and python gives
+
+<pre>
+12568
+3102
+                                 OLS Regression Results                                
+=======================================================================================
+Dep. Variable:                ttl_exp   R-squared (uncentered):                   0.266
+Model:                            OLS   Adj. R-squared (uncentered):             -1.977
+Method:                 Least Squares   F-statistic:                              482.2
+Date:                Sun, 03 Jan 2021   Prob (F-statistic):                   4.45e-183
+Time:                        12:16:31   Log-Likelihood:                         -18009.
+No. Observations:               12568   AIC:                                  3.602e+04
+Df Residuals:                    3100   BIC:                                  3.604e+04
+Df Model:                           2                                                  
+Covariance Type:              cluster                                                  
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+wks_ue         0.0040      0.002      1.959      0.050   -1.67e-06       0.008
+tenure         0.2780      0.009     31.033      0.000       0.260       0.296
+==============================================================================
+Omnibus:                     1286.365   Durbin-Watson:                   1.788
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             8023.661
+Skew:                           0.285   Prob(JB):                         0.00
+Kurtosis:                       6.873   Cond. No.                         2.47
+==============================================================================
+
+Notes:
+[1] R² is computed without centering (uncentered) since the model does not contain a constant.
+[2] Standard Errors are robust to cluster correlation (cluster)
+params
+wks_ue    0.004027
+tenure    0.277975
+</pre>
+
+Also checked the residuals and they are identical.
+
+Honestly seems like numerical error. 
+
+
+### Comment Code
+
+#### Checking clustering yet again
+
+Okay so there appears to be an <pre>algo._groups_list</pre> object. 
+
+
+
 
 
 

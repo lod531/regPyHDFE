@@ -1,0 +1,5 @@
+pyhdfe
+pandas>=1.1.4
+numpy>=1.18.5
+statsmodels>=0.12.1
+patsy>=0.5.1
