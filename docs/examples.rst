@@ -1,7 +1,7 @@
 Examples
 =============
 
-Installation:
+Installation
 *******************
 
 ``pip install regpyhdfe``, simple as that.
