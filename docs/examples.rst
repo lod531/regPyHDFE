@@ -1,82 +1,25 @@
-:Examples
+Examples
 =============
 
-Installation/Usage:
+Installation:
 *******************
 
-``pip install regpyhdfe``, simple as that
+``pip install regpyhdfe``, simple as that.
 
-Search for device, connect and read characteristic
+Examples
 **************************************************
-.. code-block:: python
 
-	m regpyhdfe import Regpyhdfe
-	import pandas as pd
-	import numpy as np
+The examples consist of two parts: the python code and the comments.
 
-	df = pd.read_stata('data/cleaned_nlswork.dta')
-	df['hours_log'] = np.log(df['hours'])
-	regpyhdfe = Regpyhdfe(df=df,
-							target='ttl_exp',
-							predictors=['wks_ue', 'tenure'],
-							ids=['idcode'],
-							cluster_ids=['year', 'idcode'])
+The python code(s) are minimal examples of a regression. One could simply copy/paste the code, change the dataset and the features of regression and have a working script.
 
-	# (dropped 884 singleton observations)
-	# (MWFE estimator converged in 1 iterations)
-	# 
-	# HDFE Linear regression                            Number of obs   =     12,568
-	# Absorbing 1 HDFE group                            F(   2,     11) =     114.58
-	# Statistics robust to heteroskedasticity           Prob > F        =     0.0000
-	#                                                   R-squared       =     0.6708
-	#                                                   Adj R-squared   =     0.5628
-	# Number of clusters (year)    =         12         Within R-sq.    =     0.4536
-	# Number of clusters (idcode)  =      3,102         Root MSE        =     2.8836
-	# 
-	#                            (Std. Err. adjusted for 12 clusters in year idcode)
-	# ------------------------------------------------------------------------------
-	#              |               Robust
-	#      ttl_exp |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
-	# -------------+----------------------------------------------------------------
-	#       wks_ue |   .0306653   .0155436     1.97   0.074    -.0035459    .0648765
-	#       tenure |   .8513953   .0663892    12.82   0.000     .7052737    .9975169
-	#        _cons |   3.784107   .4974451     7.61   0.000     2.689238    4.878976
-	# ------------------------------------------------------------------------------
-	# 
-	# Absorbed degrees of freedom:
-	# -----------------------------------------------------+
-	#  Absorbed FE | Categories  - Redundant  = Num. Coefs |
-	# -------------+---------------------------------------|
-	#       idcode |      3102        3102           0    *|
-	# -----------------------------------------------------+
-	# * = FE nested within cluster; treated as redundant for DoF computation
+The comments consists of two parts: first part is an identical regression using the reghdfe package in stata. The second part is the output of a corresponding python regression using regPyHDFE. Those comments are there for comparison purposes. 
 
-	#                                  OLS Regression Results                                
-	# =======================================================================================
-	# Dep. Variable:                ttl_exp   R-squared (uncentered):                   0.454
-	# Model:                            OLS   Adj. R-squared (uncentered):           -623.342
-	# Method:                 Least Squares   F-statistic:                              114.8
-	# Date:                Mon, 11 Jan 2021   Prob (F-statistic):                    4.28e-08
-	# Time:                        21:35:07   Log-Likelihood:                         -29361.
-	# No. Observations:               12568   AIC:                                  5.873e+04
-	# Df Residuals:                      11   BIC:                                  5.874e+04
-	# Df Model:                           2                                                  
-	# Covariance Type:              cluster                                                  
-	# ==============================================================================
-	#                  coef    std err          z      P>|z|      [0.025      0.975]
-	# ------------------------------------------------------------------------------
-	# wks_ue         0.0307      0.016      1.975      0.048       0.000       0.061
-	# tenure         0.8514      0.066     12.831      0.000       0.721       0.981
-	# ==============================================================================
-	# Omnibus:                     2467.595   Durbin-Watson:                   1.819
-	# Prob(Omnibus):                  0.000   Jarque-Bera (JB):             8034.980
-	# Skew:                           0.993   Prob(JB):                         0.00
-	# Kurtosis:                       6.376   Cond. No.                         2.06
-	# ==============================================================================
+Timing information is trivial and at this time not included - both stata and python run instantly on a laptop CPU.
 
-	results = regpyhdfe.fit()
-	print(results.summary())
-
+Using fixed effects only
+------------------------
+These examples do not use clustering. As You can see, all that's really needed is a pandas dataframe. Then simply pass in the arguments in appropriate order (or simply pass named arguments. For details on parameters look at the Regpyhdfe object documentation)
 
 .. code-block:: python
 
@@ -241,8 +184,6 @@ Search for device, connect and read characteristic
 
 	df['hours_log'] = np.log(df['hours'])
 
-	# algo = pyhdfe.create(df, ['idcode', 'year'])
-	# residualized = Reg[yhdfe(df, ['ln_wage', 'hours_log'], False))
 	# . reghdfe ln_wage hours_log, absorb(idcode year)
 	# (dropped 884 singleton observations)
 	# (MWFE estimator converged in 8 iterations)
@@ -299,3 +240,76 @@ Search for device, connect and read characteristic
 	print("ln_wage ~ hours_log, absorb(idcode, year)")
 	print(results.summary())
 
+Clustering:
+-----------
+
+Very similar to standard regression, simply add a clustering_ids parameter to the parameter list passed to Regpyhdfe.
+
+.. code-block:: python
+
+	from regpyhdfe import Regpyhdfe
+	import pandas as pd
+	import numpy as np
+
+	df = pd.read_stata('data/cleaned_nlswork.dta')
+	df['hours_log'] = np.log(df['hours'])
+	regpyhdfe = Regpyhdfe(df=df,
+							target='ttl_exp',
+							predictors=['wks_ue', 'tenure'],
+							ids=['idcode'],
+							cluster_ids=['year', 'idcode'])
+
+	# (dropped 884 singleton observations)
+	# (MWFE estimator converged in 1 iterations)
+	# 
+	# HDFE Linear regression                            Number of obs   =     12,568
+	# Absorbing 1 HDFE group                            F(   2,     11) =     114.58
+	# Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+	#                                                   R-squared       =     0.6708
+	#                                                   Adj R-squared   =     0.5628
+	# Number of clusters (year)    =         12         Within R-sq.    =     0.4536
+	# Number of clusters (idcode)  =      3,102         Root MSE        =     2.8836
+	# 
+	#                            (Std. Err. adjusted for 12 clusters in year idcode)
+	# ------------------------------------------------------------------------------
+	#              |               Robust
+	#      ttl_exp |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+	# -------------+----------------------------------------------------------------
+	#       wks_ue |   .0306653   .0155436     1.97   0.074    -.0035459    .0648765
+	#       tenure |   .8513953   .0663892    12.82   0.000     .7052737    .9975169
+	#        _cons |   3.784107   .4974451     7.61   0.000     2.689238    4.878976
+	# ------------------------------------------------------------------------------
+	# 
+	# Absorbed degrees of freedom:
+	# -----------------------------------------------------+
+	#  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+	# -------------+---------------------------------------|
+	#       idcode |      3102        3102           0    *|
+	# -----------------------------------------------------+
+	# * = FE nested within cluster; treated as redundant for DoF computation
+
+	#                                  OLS Regression Results                                
+	# =======================================================================================
+	# Dep. Variable:                ttl_exp   R-squared (uncentered):                   0.454
+	# Model:                            OLS   Adj. R-squared (uncentered):           -623.342
+	# Method:                 Least Squares   F-statistic:                              114.8
+	# Date:                Mon, 11 Jan 2021   Prob (F-statistic):                    4.28e-08
+	# Time:                        21:35:07   Log-Likelihood:                         -29361.
+	# No. Observations:               12568   AIC:                                  5.873e+04
+	# Df Residuals:                      11   BIC:                                  5.874e+04
+	# Df Model:                           2                                                  
+	# Covariance Type:              cluster                                                  
+	# ==============================================================================
+	#                  coef    std err          z      P>|z|      [0.025      0.975]
+	# ------------------------------------------------------------------------------
+	# wks_ue         0.0307      0.016      1.975      0.048       0.000       0.061
+	# tenure         0.8514      0.066     12.831      0.000       0.721       0.981
+	# ==============================================================================
+	# Omnibus:                     2467.595   Durbin-Watson:                   1.819
+	# Prob(Omnibus):                  0.000   Jarque-Bera (JB):             8034.980
+	# Skew:                           0.993   Prob(JB):                         0.00
+	# Kurtosis:                       6.376   Cond. No.                         2.06
+	# ==============================================================================
+
+	results = regpyhdfe.fit()
+	print(results.summary())

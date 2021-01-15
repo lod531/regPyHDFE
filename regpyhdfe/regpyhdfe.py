@@ -7,33 +7,33 @@ from .utils import add_intercept, get_np_columns
 from patsy import dmatrices
 
 class Regpyhdfe:
-    def __init__(self, df, target, predictors, ids, cluster_ids=[], drop_singletons=True):
+    def __init__(self, df, target, predictors, absorb_ids, cluster_ids=[], drop_singletons=True):
         """Regression wrapper for PyHDFE.
 
         Args:
-            target (string): name of target variable
-            predictors (string or list of strings): names of predictors
-            ids (list of strings): names of variables to be absorbed
             df (pandas Dataframe): dataframe containing referenced data
-                                    which includes target, predictors and ids
-        Returns:
-            Itself lol. It's a constructor.
+                    which includes target, predictors and absorb and cluster
+            target (string): name of target variable - the y in y = X*b + e
+            predictors (string or list of strings): names of predictors, the X in y = X*b + e
+            absorb_ids (string or list of strings): names of variables to be absorbed for fixed effects
+            cluster_ids (string or list of strings): names of variables to be clustered on
+            drop_singletons (bool): indicates whether to drop singleton groups. Defaults is True, same as stata. Setting to False is equivalent to passing keepsingletons to reghdfe
         """
         self.df = df
         # in case user has not wrapped singular strings in a list
         if isinstance(predictors, str):
             predictors = [predictors]
-        if isinstance(ids, str):
-            ids = [ids]
+        if isinstance(absorb_ids, str):
+            absorb_ids = [absorb_ids]
         if isinstance(cluster_ids, str):
             cluster_ids = [cluster_ids]
             
         self.target = target
         self.predictors = predictors
-        self.ids = ids
+        self.absorb_ids = absorb_ids
         self.cluster_ids = cluster_ids
 
-        self.algo = pyhdfe.create(ids=get_np_columns(df, ids),
+        self.algo = pyhdfe.create(ids=get_np_columns(df, absorb_ids),
                                     cluster_ids=get_np_columns(df, cluster_ids),
                                     drop_singletons=drop_singletons,
                                     degrees_method='pairwise')
@@ -58,10 +58,12 @@ class Regpyhdfe:
         self.model = sm.OLS(y, X)
 
     def fit(self):
-        """Generate linear regression coefficients for given data
+        """Generate linear regression coefficients for given data.
 
-        Results:
-            Placeholder
+        The regression will cluster on variables provided during initialization.
+
+        Returns:
+            statsmodels.regression.linear_model.RegressionResults
         """
         # if not empty
         if bool(self.cluster_ids):
@@ -77,7 +79,7 @@ class Regpyhdfe:
                 if current_count < min_cluster_count:
                     min_cluster_count = current_count
 
-            self.model.df_resid = min_cluster_count - self.algo.degrees - len(self.predictors) + 1
+            self.model.df_resid = min_cluster_count - len(self.predictors)
 
             res = self.model.fit(cov_type='cluster', cov_kwds={'df_correction':False, 'groups':groups_np})
             # manually adjusting degrees of freedom of residuals
@@ -87,25 +89,3 @@ class Regpyhdfe:
             #self.model.df_resid = self.residualized.shape[0]-len(predictors)-self.algo.degrees
             self.model.df_resid = np.sum(~self.algo._singleton_indices)-len(self.predictors)-self.algo.degrees
             return self.model.fit()
-                
-# def main():
-# 	# Load data
-# 	df = pd.read_stata('./data/cleaned_nlswork.dta')
-# 	df = df.dropna()
-# 	#df.info()
-# 
-# 
-# 	df['hours_log'] = np.log(df['hours'])
-# 
-# 	pyreghdfe = Pyreghdfe('ln_wage', ['hours_log', 'ttl_exp'], ['idcode', 'year'], df)
-# 	results = pyreghdfe.fit()
-# 	print()
-# 	print("ln_wage ~ hours_log, ttl_exp, absorb(idcode, year)")
-# 	results.summary()
-# 	print(results.summary())
-# 	print("df_model", results.df_model)
-# 	print("df_resid", results.df_resid)
-# 
-# if __name__ == "__main__":
-#     # execute only if run as a script
-#     main()

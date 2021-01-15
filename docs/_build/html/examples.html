@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>:Examples &mdash; regpyhdfe  documentation</title>
+  <title>Examples &mdash; regpyhdfe  documentation</title>
   
 
   
@@ -38,7 +38,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="regpyhdfe package" href="regpyhdfe.html" /> 
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,9 +86,14 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="regpyhdfe.html">regpyhdfe package</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">:Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation-usage">Installation/Usage:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#search-for-device-connect-and-read-characteristic">Search for device, connect and read characteristic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-fixed-effects-only">Using fixed effects only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clustering">Clustering:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -139,7 +144,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>:Examples</li>
+      <li>Examples</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -159,81 +164,20 @@
            <div itemprop="articleBody">
             
   <div class="section" id="examples">
-<h1>:Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="installation-usage">
-<h2>Installation/Usage:<a class="headerlink" href="#installation-usage" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">regpyhdfe</span></code>, simple as that</p>
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation:<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">regpyhdfe</span></code>, simple as that.</p>
 </div>
-<div class="section" id="search-for-device-connect-and-read-characteristic">
-<h2>Search for device, connect and read characteristic<a class="headerlink" href="#search-for-device-connect-and-read-characteristic" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">m</span> <span class="n">regpyhdfe</span> <span class="kn">import</span> <span class="nn">Regpyhdfe</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_stata</span><span class="p">(</span><span class="s1">&#39;data/cleaned_nlswork.dta&#39;</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s1">&#39;hours_log&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;hours&#39;</span><span class="p">])</span>
-<span class="n">regpyhdfe</span> <span class="o">=</span> <span class="n">Regpyhdfe</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
-                                                <span class="n">target</span><span class="o">=</span><span class="s1">&#39;ttl_exp&#39;</span><span class="p">,</span>
-                                                <span class="n">predictors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;wks_ue&#39;</span><span class="p">,</span> <span class="s1">&#39;tenure&#39;</span><span class="p">],</span>
-                                                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;idcode&#39;</span><span class="p">],</span>
-                                                <span class="n">cluster_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;idcode&#39;</span><span class="p">])</span>
-
-<span class="c1"># (dropped 884 singleton observations)</span>
-<span class="c1"># (MWFE estimator converged in 1 iterations)</span>
-<span class="c1">#</span>
-<span class="c1"># HDFE Linear regression                            Number of obs   =     12,568</span>
-<span class="c1"># Absorbing 1 HDFE group                            F(   2,     11) =     114.58</span>
-<span class="c1"># Statistics robust to heteroskedasticity           Prob &gt; F        =     0.0000</span>
-<span class="c1">#                                                   R-squared       =     0.6708</span>
-<span class="c1">#                                                   Adj R-squared   =     0.5628</span>
-<span class="c1"># Number of clusters (year)    =         12         Within R-sq.    =     0.4536</span>
-<span class="c1"># Number of clusters (idcode)  =      3,102         Root MSE        =     2.8836</span>
-<span class="c1">#</span>
-<span class="c1">#                            (Std. Err. adjusted for 12 clusters in year idcode)</span>
-<span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1">#              |               Robust</span>
-<span class="c1">#      ttl_exp |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]</span>
-<span class="c1"># -------------+----------------------------------------------------------------</span>
-<span class="c1">#       wks_ue |   .0306653   .0155436     1.97   0.074    -.0035459    .0648765</span>
-<span class="c1">#       tenure |   .8513953   .0663892    12.82   0.000     .7052737    .9975169</span>
-<span class="c1">#        _cons |   3.784107   .4974451     7.61   0.000     2.689238    4.878976</span>
-<span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1">#</span>
-<span class="c1"># Absorbed degrees of freedom:</span>
-<span class="c1"># -----------------------------------------------------+</span>
-<span class="c1">#  Absorbed FE | Categories  - Redundant  = Num. Coefs |</span>
-<span class="c1"># -------------+---------------------------------------|</span>
-<span class="c1">#       idcode |      3102        3102           0    *|</span>
-<span class="c1"># -----------------------------------------------------+</span>
-<span class="c1"># * = FE nested within cluster; treated as redundant for DoF computation</span>
-
-<span class="c1">#                                  OLS Regression Results</span>
-<span class="c1"># =======================================================================================</span>
-<span class="c1"># Dep. Variable:                ttl_exp   R-squared (uncentered):                   0.454</span>
-<span class="c1"># Model:                            OLS   Adj. R-squared (uncentered):           -623.342</span>
-<span class="c1"># Method:                 Least Squares   F-statistic:                              114.8</span>
-<span class="c1"># Date:                Mon, 11 Jan 2021   Prob (F-statistic):                    4.28e-08</span>
-<span class="c1"># Time:                        21:35:07   Log-Likelihood:                         -29361.</span>
-<span class="c1"># No. Observations:               12568   AIC:                                  5.873e+04</span>
-<span class="c1"># Df Residuals:                      11   BIC:                                  5.874e+04</span>
-<span class="c1"># Df Model:                           2</span>
-<span class="c1"># Covariance Type:              cluster</span>
-<span class="c1"># ==============================================================================</span>
-<span class="c1">#                  coef    std err          z      P&gt;|z|      [0.025      0.975]</span>
-<span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># wks_ue         0.0307      0.016      1.975      0.048       0.000       0.061</span>
-<span class="c1"># tenure         0.8514      0.066     12.831      0.000       0.721       0.981</span>
-<span class="c1"># ==============================================================================</span>
-<span class="c1"># Omnibus:                     2467.595   Durbin-Watson:                   1.819</span>
-<span class="c1"># Prob(Omnibus):                  0.000   Jarque-Bera (JB):             8034.980</span>
-<span class="c1"># Skew:                           0.993   Prob(JB):                         0.00</span>
-<span class="c1"># Kurtosis:                       6.376   Cond. No.                         2.06</span>
-<span class="c1"># ==============================================================================</span>
-
-<span class="n">results</span> <span class="o">=</span> <span class="n">regpyhdfe</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
-</pre></div>
-</div>
+<div class="section" id="id1">
+<h2>Examples<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>The examples consist of two parts: the python code and the comments.</p>
+<p>The python code(s) are minimal examples of a regression. One could simply copy/paste the code, change the dataset and the features of regression and have a working script.</p>
+<p>The comments consists of two parts: first part is an identical regression using the reghdfe package in stata. The second part is the output of a corresponding python regression using regPyHDFE. Those comments are there for comparison purposes.</p>
+<p>Timing information is trivial and at this time not included - both stata and python run instantly on a laptop CPU.</p>
+<div class="section" id="using-fixed-effects-only">
+<h3>Using fixed effects only<a class="headerlink" href="#using-fixed-effects-only" title="Permalink to this headline">¶</a></h3>
+<p>These examples do not use clustering. As You can see, all that’s really needed is a pandas dataframe. Then simply pass in the arguments in appropriate order (or simply pass named arguments. For details on parameters look at the Regpyhdfe object documentation)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">regpyhdfe</span> <span class="kn">import</span> <span class="n">Regpyhdfe</span>
@@ -392,8 +336,6 @@
 
 <span class="n">df</span><span class="p">[</span><span class="s1">&#39;hours_log&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;hours&#39;</span><span class="p">])</span>
 
-<span class="c1"># algo = pyhdfe.create(df, [&#39;idcode&#39;, &#39;year&#39;])</span>
-<span class="c1"># residualized = Reg[yhdfe(df, [&#39;ln_wage&#39;, &#39;hours_log&#39;], False))</span>
 <span class="c1"># . reghdfe ln_wage hours_log, absorb(idcode year)</span>
 <span class="c1"># (dropped 884 singleton observations)</span>
 <span class="c1"># (MWFE estimator converged in 8 iterations)</span>
@@ -452,6 +394,79 @@
 </pre></div>
 </div>
 </div>
+<div class="section" id="clustering">
+<h3>Clustering:<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h3>
+<p>Very similar to standard regression, simply add a clustering_ids parameter to the parameter list passed to Regpyhdfe.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">regpyhdfe</span> <span class="kn">import</span> <span class="n">Regpyhdfe</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_stata</span><span class="p">(</span><span class="s1">&#39;data/cleaned_nlswork.dta&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;hours_log&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;hours&#39;</span><span class="p">])</span>
+<span class="n">regpyhdfe</span> <span class="o">=</span> <span class="n">Regpyhdfe</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                                                <span class="n">target</span><span class="o">=</span><span class="s1">&#39;ttl_exp&#39;</span><span class="p">,</span>
+                                                <span class="n">predictors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;wks_ue&#39;</span><span class="p">,</span> <span class="s1">&#39;tenure&#39;</span><span class="p">],</span>
+                                                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;idcode&#39;</span><span class="p">],</span>
+                                                <span class="n">cluster_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;idcode&#39;</span><span class="p">])</span>
+
+<span class="c1"># (dropped 884 singleton observations)</span>
+<span class="c1"># (MWFE estimator converged in 1 iterations)</span>
+<span class="c1">#</span>
+<span class="c1"># HDFE Linear regression                            Number of obs   =     12,568</span>
+<span class="c1"># Absorbing 1 HDFE group                            F(   2,     11) =     114.58</span>
+<span class="c1"># Statistics robust to heteroskedasticity           Prob &gt; F        =     0.0000</span>
+<span class="c1">#                                                   R-squared       =     0.6708</span>
+<span class="c1">#                                                   Adj R-squared   =     0.5628</span>
+<span class="c1"># Number of clusters (year)    =         12         Within R-sq.    =     0.4536</span>
+<span class="c1"># Number of clusters (idcode)  =      3,102         Root MSE        =     2.8836</span>
+<span class="c1">#</span>
+<span class="c1">#                            (Std. Err. adjusted for 12 clusters in year idcode)</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1">#              |               Robust</span>
+<span class="c1">#      ttl_exp |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]</span>
+<span class="c1"># -------------+----------------------------------------------------------------</span>
+<span class="c1">#       wks_ue |   .0306653   .0155436     1.97   0.074    -.0035459    .0648765</span>
+<span class="c1">#       tenure |   .8513953   .0663892    12.82   0.000     .7052737    .9975169</span>
+<span class="c1">#        _cons |   3.784107   .4974451     7.61   0.000     2.689238    4.878976</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1"># Absorbed degrees of freedom:</span>
+<span class="c1"># -----------------------------------------------------+</span>
+<span class="c1">#  Absorbed FE | Categories  - Redundant  = Num. Coefs |</span>
+<span class="c1"># -------------+---------------------------------------|</span>
+<span class="c1">#       idcode |      3102        3102           0    *|</span>
+<span class="c1"># -----------------------------------------------------+</span>
+<span class="c1"># * = FE nested within cluster; treated as redundant for DoF computation</span>
+
+<span class="c1">#                                  OLS Regression Results</span>
+<span class="c1"># =======================================================================================</span>
+<span class="c1"># Dep. Variable:                ttl_exp   R-squared (uncentered):                   0.454</span>
+<span class="c1"># Model:                            OLS   Adj. R-squared (uncentered):           -623.342</span>
+<span class="c1"># Method:                 Least Squares   F-statistic:                              114.8</span>
+<span class="c1"># Date:                Mon, 11 Jan 2021   Prob (F-statistic):                    4.28e-08</span>
+<span class="c1"># Time:                        21:35:07   Log-Likelihood:                         -29361.</span>
+<span class="c1"># No. Observations:               12568   AIC:                                  5.873e+04</span>
+<span class="c1"># Df Residuals:                      11   BIC:                                  5.874e+04</span>
+<span class="c1"># Df Model:                           2</span>
+<span class="c1"># Covariance Type:              cluster</span>
+<span class="c1"># ==============================================================================</span>
+<span class="c1">#                  coef    std err          z      P&gt;|z|      [0.025      0.975]</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># wks_ue         0.0307      0.016      1.975      0.048       0.000       0.061</span>
+<span class="c1"># tenure         0.8514      0.066     12.831      0.000       0.721       0.981</span>
+<span class="c1"># ==============================================================================</span>
+<span class="c1"># Omnibus:                     2467.595   Durbin-Watson:                   1.819</span>
+<span class="c1"># Prob(Omnibus):                  0.000   Jarque-Bera (JB):             8034.980</span>
+<span class="c1"># Skew:                           0.993   Prob(JB):                         0.00</span>
+<span class="c1"># Kurtosis:                       6.376   Cond. No.                         2.06</span>
+<span class="c1"># ==============================================================================</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">regpyhdfe</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -460,7 +475,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="regpyhdfe.html" class="btn btn-neutral float-left" title="regpyhdfe package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

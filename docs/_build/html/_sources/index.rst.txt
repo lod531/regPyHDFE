@@ -6,6 +6,7 @@ Welcome to regpyhdfe's documentation!
 
    intro
    regpyhdfe
+   tutorial
    examples
 
 
