@@ -12,12 +12,12 @@ class Regpyhdfe:
 
         Args:
             df (pandas Dataframe): dataframe containing referenced data
-                    which includes target, predictors and absorb and cluster
-            target (string): name of target variable - the y in y = X*b + e
-            predictors (string or list of strings): names of predictors, the X in y = X*b + e
-            absorb_ids (string or list of strings): names of variables to be absorbed for fixed effects
-            cluster_ids (string or list of strings): names of variables to be clustered on
-            drop_singletons (bool): indicates whether to drop singleton groups. Defaults is True, same as stata. Setting to False is equivalent to passing keepsingletons to reghdfe
+                    which includes target, predictors and absorb and cluster.
+            target (string): name of target variable - the y in y = X*b + e.
+            predictors (string or list of strings): names of predictors, the X in y = X*b + e.
+            absorb_ids (string or list of strings): names of variables to be absorbed for fixed effects.
+            cluster_ids (string or list of strings): names of variables to be clustered on.
+            drop_singletons (bool): indicates whether to drop singleton groups. Defaults is True, same as stata. Setting to False is equivalent to passing keepsingletons to reghdfe.
         """
         self.df = df
         # in case user has not wrapped singular strings in a list
@@ -63,7 +63,7 @@ class Regpyhdfe:
         The regression will cluster on variables provided during initialization.
 
         Returns:
-            statsmodels.regression.linear_model.RegressionResults
+            statsmodels.regression.linear_model.RegressionResults.
         """
         # if not empty
         if bool(self.cluster_ids):
@@ -86,6 +86,5 @@ class Regpyhdfe:
             #res.df_resid_inference = res.df_resid
             return res
         else:
-            #self.model.df_resid = self.residualized.shape[0]-len(predictors)-self.algo.degrees
             self.model.df_resid = np.sum(~self.algo._singleton_indices)-len(self.predictors)-self.algo.degrees
             return self.model.fit()

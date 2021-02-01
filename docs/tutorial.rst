@@ -111,13 +111,10 @@ And for Your convenience the whole script is
 	cluster_ids = ["year"]
 
 	from regpyhdfe import Regpyhdfe
-	model = Regpyhdfe(df=df, target=target,
-						 predictors = predictors, 
-							absorb_ids=absorb_ids, 
-							cluster_ids=cluster_ids)
+	model = Regpyhdfe(df=df, target=target, 
+            predictors = predictors, 
+            absorb_ids=absorb_ids, 
+            cluster_ids=cluster_ids)
 	results = model.fit()
 	print(results.summary())
-
-
-
 

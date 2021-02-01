@@ -254,10 +254,10 @@ Very similar to standard regression, simply add a clustering_ids parameter to th
 	df = pd.read_stata('data/cleaned_nlswork.dta')
 	df['hours_log'] = np.log(df['hours'])
 	regpyhdfe = Regpyhdfe(df=df,
-							target='ttl_exp',
-							predictors=['wks_ue', 'tenure'],
-							ids=['idcode'],
-							cluster_ids=['year', 'idcode'])
+            target='ttl_exp',
+            predictors=['wks_ue', 'tenure'],
+            ids=['idcode'],
+            cluster_ids=['year', 'idcode'])
 
 	# (dropped 884 singleton observations)
 	# (MWFE estimator converged in 1 iterations)
