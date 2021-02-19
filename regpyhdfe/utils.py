@@ -17,7 +17,7 @@ def sklearn_to_df(sklearn_dataset):
     return df
 
 def add_intercept(X):
-    """Appends a column of 1s (an intercept column) to a a 2D numpy array.
+    """Prepends a column of 1s (an intercept column) to a a 2D numpy array.
 
     Args:
         X (numpy array): 2D numpy array.
@@ -25,9 +25,9 @@ def add_intercept(X):
         X with an appended column of 1s. 
     """
     # X has to be a 2D numpy array
-    # appends intercept as the last column
+    # prepends intercept
     intercept = np.ones(X.shape[0])
-    return np.c_[X, intercept]
+    return np.c_[intercept, X]
 
 def get_np_columns(df, columns, intercept=False):
     """Helper used to retreive columns as numpy array.
