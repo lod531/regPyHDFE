@@ -1,5 +1,9 @@
 # regPyHDFE
 
+## You may want to check out
+
+My fork of FixedModelEffects - everything regPyHDFE can do, that repo can do better.
+
 
 ## Installation:
 
