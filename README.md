@@ -2,7 +2,7 @@
 
 ## You may want to check out
 
-My fork of [FixedModelEffects](https://github.com/lod531/FixedEffectModel) - everything regPyHDFE can do, that repo can do better.
+My fork of FixedEffectModel - [FixedEffectModelPyHDFE](https://github.com/lod531/FixedEffectModel) - everything regPyHDFE can do, that repo can do better.
 
 
 ## Installation:
