@@ -24,7 +24,7 @@ In order to change address this, one would have to change the underyling model u
 Replication of Stata not _quite_ identical when using clustering
 -----------------------------------------------------------------------------------
 
-By not quite I mean an F-Value of 11.4 v.s. 114.58 etc.:
+By not quite I mean an F-Value of 114.8 v.s. 114.58 etc.:
 
 .. code-block:: python
 
